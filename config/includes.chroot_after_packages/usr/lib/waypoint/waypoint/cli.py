@@ -25,6 +25,7 @@ def main(argv=None):
     install = commands.add_parser("install", help="install the tools for a track")
     install.add_argument("tracks", nargs="+", choices=sorted(TRACKS))
     commands.add_parser("snapshot", help="take an undo snapshot now")
+    commands.add_parser("claude", help="install the Claude desktop app")
     commands.add_parser("docker-setup", help="let your account use Docker")
     args = parser.parse_args(argv)
 
@@ -50,6 +51,8 @@ def main(argv=None):
         _helper("install-tracks", *args.tracks)
     if args.command == "snapshot":
         _helper("snapshot")
+    if args.command == "claude":
+        _helper("install-claude")
     if args.command == "docker-setup":
         _helper("enable-docker")
     return 0

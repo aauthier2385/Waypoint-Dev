@@ -52,6 +52,8 @@ class Welcome(Gtk.Window):
         self.live = live
         self.dry_run = dry_run
         self.projects = {}
+        self.retry = lambda: None
+        self.back_page = "tracks"
         self.track_checks = {}
         self.set_default_size(720, 560)
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -119,11 +121,25 @@ class Welcome(Gtk.Window):
                                  "wp-note"), False, False, 0)
             driver = Gtk.Button(label="Install NVIDIA driver")
             driver.set_halign(Gtk.Align.START)
-            driver.connect("clicked", lambda _: self.run_driver_install())
+            driver.connect("clicked", lambda _: self.run_action(
+                ["gpu-driver"], "Done. Restart your PC to start using the driver.",
+                "The driver wasn't installed. Your PC will keep using the built-in one.", "hello"))
             box.pack_start(driver, False, False, 0)
+
+        box.pack_start(label("Want help while you learn? Claude can explain errors and work through "
+                             "code with you. You'll need a Claude account.", "wp-muted"), False, False, 0)
+        box.pack_start(self.claude_button("hello"), False, False, 0)
 
         self.footer(box, forward=lambda _: self.stack.set_visible_child_name("tracks"), forward_label="Get started")
         return box
+
+    def claude_button(self, back_page):
+        button = Gtk.Button(label="Set up Claude")
+        button.set_halign(Gtk.Align.START)
+        button.connect("clicked", lambda _: self.run_action(
+            ["install-claude"], "Done. Open Claude from the applications menu and sign in.",
+            "Claude wasn't installed. Check your internet connection and try again.", back_page))
+        return button
 
     def build_tracks(self):
         box = self.page("What do you want to build?", "Pick one or more. You can add others later.")
@@ -180,13 +196,12 @@ class Welcome(Gtk.Window):
         scroll.add(self.log)
         box.pack_start(scroll, True, True, 0)
         self.retry_row = Gtk.Box(spacing=8, no_show_all=True)
-        retry = Gtk.Button(label="Try again")
-        retry.connect("clicked", self.on_install)
-        self.retry_row.pack_start(retry, False, False, 0)
+        self.retry_button = Gtk.Button(label="Try again")
+        self.retry_button.connect("clicked", lambda _: self.retry())
+        self.retry_row.pack_start(self.retry_button, False, False, 0)
         back = Gtk.Button(label="Back")
-        back.connect("clicked", lambda _: self.stack.set_visible_child_name("tracks"))
+        back.connect("clicked", lambda _: self.stack.set_visible_child_name(self.back_page))
         self.retry_row.pack_start(back, False, False, 0)
-        retry.show()
         back.show()
         box.pack_start(self.retry_row, False, False, 0)
         return box
@@ -206,6 +221,7 @@ class Welcome(Gtk.Window):
         close.get_style_context().add_class("wp-primary")
         close.connect("clicked", lambda _: self.destroy())
         tools.pack_start(doctor, False, False, 0)
+        tools.pack_start(self.claude_button("done"), False, False, 0)
         tools.pack_start(undo, False, False, 0)
         tools.pack_end(close, False, False, 0)
         box.pack_end(tools, False, False, 0)
@@ -255,15 +271,26 @@ class Welcome(Gtk.Window):
 
     def on_install(self, _button):
         self.save_git_identity()
-        self.retry_row.hide()
-        self.stack.set_visible_child_name("progress")
+        self.back_page = "tracks"
+        self.retry = lambda: self.on_install(None)
+        self.show_progress()
         tracks = self.selected_tracks()
         threading.Thread(target=self.install_worker, args=(tracks,), daemon=True).start()
 
-    def run_driver_install(self):
+    def run_action(self, helper_args, success, failure, back_page):
+        self.back_page = back_page
+        self.retry = lambda: self.run_action(helper_args, success, failure, back_page)
+        self.show_progress()
+        threading.Thread(target=self.action_worker, args=(helper_args, success, failure), daemon=True).start()
+
+    def show_progress(self):
         self.retry_row.hide()
         self.stack.set_visible_child_name("progress")
-        threading.Thread(target=self.driver_worker, daemon=True).start()
+
+    def show_result(self, succeeded):
+        self.retry_button.set_visible(not succeeded)
+        self.retry_row.show()
+        return False
 
     def stream(self, args):
         if self.dry_run:
@@ -278,17 +305,16 @@ class Welcome(Gtk.Window):
             GLib.idle_add(self.append_log, line)
         return process.wait()
 
-    def driver_worker(self):
-        code = self.stream(["pkexec", HELPER, "gpu-driver"])
-        message = "Done. Restart your PC to start using the driver.\n" if code == 0 else "The driver wasn't installed. Your PC will keep using the built-in one.\n"
-        GLib.idle_add(self.append_log, message)
-        GLib.idle_add(self.retry_row.show)
+    def action_worker(self, helper_args, success, failure):
+        code = self.stream(["pkexec", HELPER, *helper_args])
+        GLib.idle_add(self.append_log, f"\n{success if code == 0 else failure}\n")
+        GLib.idle_add(self.show_result, code == 0)
 
     def install_worker(self, tracks):
         code = self.stream(["pkexec", HELPER, "install-tracks", *tracks])
         if code != 0:
             GLib.idle_add(self.append_log, "\nSetup didn't finish. Check your internet connection and try again.\n")
-            GLib.idle_add(self.retry_row.show)
+            GLib.idle_add(self.show_result, False)
             return
         GLib.idle_add(self.finish_install, tracks)
 

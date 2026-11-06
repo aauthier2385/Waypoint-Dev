@@ -4,12 +4,23 @@ names always come from the track list, never from the caller."""
 import os
 import pwd
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 sys.path.insert(0, "/usr/lib/waypoint")
 from waypoint.hardware import secure_boot_enabled  # noqa: E402
 from waypoint.tracks import packages_for  # noqa: E402
+
+CLAUDE_KEY_URL = "https://downloads.claude.ai/claude-desktop/key.asc"
+CLAUDE_KEY_FINGERPRINT = "31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE"
+CLAUDE_KEYRING = "/usr/share/keyrings/claude-desktop-archive-keyring.asc"
+CLAUDE_SOURCE = "/etc/apt/sources.list.d/claude-desktop.list"
+CLAUDE_REPO = (
+    f"deb [arch=amd64,arm64 signed-by={CLAUDE_KEYRING}] "
+    "https://downloads.claude.ai/claude-desktop/apt/stable stable main\n"
+)
 
 os.environ["PATH"] = "/usr/sbin:/usr/bin:/sbin:/bin"
 os.environ["DEBIAN_FRONTEND"] = "noninteractive"
@@ -64,6 +75,32 @@ def gpu_driver():
     return run("apt-get", "install", "-y", package)
 
 
+def key_fingerprints(key_file):
+    """Read a key file's fingerprints without importing it."""
+    output = subprocess.run(["gpg", "--batch", "--show-keys", "--with-colons", key_file],
+                            capture_output=True, text=True, check=False).stdout
+    return [line.split(":")[9] for line in output.splitlines() if line.startswith("fpr:")]
+
+
+def install_claude():
+    with tempfile.TemporaryDirectory() as folder:
+        key_file = os.path.join(folder, "key.asc")
+        if run("curl", "-fsSL", CLAUDE_KEY_URL, "-o", key_file) != 0:
+            print("Couldn't download Claude's signing key. Check your internet connection.", flush=True)
+            return 1
+        if CLAUDE_KEY_FINGERPRINT not in key_fingerprints(key_file):
+            print("Claude's signing key didn't match, so nothing was installed.", flush=True)
+            return 1
+        shutil.copyfile(key_file, CLAUDE_KEYRING)
+        os.chmod(CLAUDE_KEYRING, 0o644)
+    with open(CLAUDE_SOURCE, "w", encoding="ascii") as handle:
+        handle.write(CLAUDE_REPO)
+    if run("apt-get", "update") != 0:
+        print("Couldn't refresh the package list. Check your internet connection.", flush=True)
+        return 1
+    return run("apt-get", "install", "-y", "claude-desktop")
+
+
 def enable_docker():
     uid = os.environ.get("PKEXEC_UID")
     if not uid or int(uid) == 0:
@@ -87,6 +124,8 @@ def main(argv):
         return 0
     if argv == ["gpu-driver"]:
         return gpu_driver()
+    if argv == ["install-claude"]:
+        return install_claude()
     if argv == ["enable-docker"]:
         return enable_docker()
     print("Unknown action.", file=sys.stderr)

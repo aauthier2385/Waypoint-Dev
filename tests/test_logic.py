@@ -87,6 +87,13 @@ def test_nvidia_choice_accepts_only_driver_packages():
     assert helper.choose_nvidia_package("evil-package\n") is None
 
 
+def test_claude_setup_uses_the_published_key_and_source():
+    helper = load_helper()
+    assert helper.CLAUDE_KEY_FINGERPRINT == "31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE"
+    assert helper.CLAUDE_KEY_URL.startswith("https://downloads.claude.ai/")
+    assert f"signed-by={helper.CLAUDE_KEYRING}" in helper.CLAUDE_REPO
+
+
 def free_port():
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
