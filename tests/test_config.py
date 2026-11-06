@@ -15,7 +15,7 @@ SHELL_SCRIPTS = [
     ROOT / "build.sh", ROOT / "auto/config", ROOT / "auto/clean",
     ROOT / "scripts/build-inside.sh", ROOT / "scripts/check-packages.sh",
     ROOT / "config/hooks/normal/0100-waypoint.hook.chroot",
-    INCLUDES / "usr/sbin/bootloader-config", INCLUDES / "usr/sbin/sources-final",
+    INCLUDES / "usr/lib/waypoint/installer/bootloader-config", INCLUDES / "usr/lib/waypoint/installer/sources-final",
 ]
 
 
@@ -30,8 +30,8 @@ def test_shell_scripts_pass_shellcheck(script):
 @pytest.mark.parametrize("path", [
     ROOT / "build.sh", ROOT / "auto/config", ROOT / "config/hooks/normal/0100-waypoint.hook.chroot",
     INCLUDES / "usr/bin/dev", INCLUDES / "usr/bin/waypoint-welcome",
-    INCLUDES / "usr/libexec/waypoint/waypoint-helper", INCLUDES / "usr/sbin/bootloader-config",
-    INCLUDES / "usr/sbin/sources-final",
+    INCLUDES / "usr/libexec/waypoint/waypoint-helper", INCLUDES / "usr/lib/waypoint/installer/bootloader-config",
+    INCLUDES / "usr/lib/waypoint/installer/sources-final",
 ], ids=lambda p: p.name)
 def test_entry_points_are_executable(path):
     assert path.stat().st_mode & 0o111
