@@ -51,4 +51,18 @@ sed -i \
   -e 's/^\( *bootloaderEntryName: *\).*/\1Waypoint/' \
   "$branding"
 
-chmod 0755 /usr/bin/dev /usr/bin/waypoint-welcome /usr/libexec/waypoint/waypoint-helper /usr/sbin/bootloader-config /usr/sbin/sources-final
+# Replace the installer's download-based scripts wherever this Debian release keeps them.
+# The build stops if a script can't be found, rather than shipping an installer that needs internet.
+for name in bootloader-config sources-final; do
+  matches="$(find /usr/share/calamares /usr/sbin -type f -name "*$name")"
+  if [ -z "$matches" ]; then
+    echo "Could not find the installer's $name script" >&2
+    exit 1
+  fi
+  for target in $matches; do
+    echo "Replacing $target"
+    install -m 0755 "/usr/lib/waypoint/installer/$name" "$target"
+  done
+done
+
+chmod 0755 /usr/bin/dev /usr/bin/waypoint-welcome /usr/libexec/waypoint/waypoint-helper
