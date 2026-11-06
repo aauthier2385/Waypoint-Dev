@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Waypoint Welcome
+Comment=Set up your developer tools
+Exec=waypoint-welcome --first-run
+Icon=applications-development
+Terminal=false
+X-GNOME-Autostart-enabled=true

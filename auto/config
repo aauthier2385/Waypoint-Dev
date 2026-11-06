@@ -1,0 +1,25 @@
+#!/bin/sh
+# Defines how the Waypoint ISO is built. live-build runs this via "lb config".
+set -e
+MIRROR="http://deb.debian.org/debian/"
+lb config noauto \
+  --mode debian \
+  --distribution trixie \
+  --architectures amd64 \
+  --archive-areas "main contrib non-free non-free-firmware" \
+  --binary-images iso-hybrid \
+  --bootloaders "syslinux,grub-efi" \
+  --debian-installer none \
+  --firmware-chroot true \
+  --linux-flavours amd64 \
+  --linux-packages linux-image \
+  --apt-recommends true \
+  --security true \
+  --updates true \
+  --mirror-bootstrap "$MIRROR" \
+  --mirror-binary "$MIRROR" \
+  --iso-application "Waypoint" \
+  --iso-publisher "Waypoint" \
+  --iso-volume "Waypoint 1" \
+  --bootappend-live "boot=live components quiet" \
+  "$@"

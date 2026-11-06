@@ -1,0 +1,97 @@
+#!/usr/bin/python3 -I
+"""Runs as root through pkexec. It only accepts these fixed actions, and package
+names always come from the track list, never from the caller."""
+import os
+import pwd
+import re
+import subprocess
+import sys
+
+sys.path.insert(0, "/usr/lib/waypoint")
+from waypoint.hardware import secure_boot_enabled  # noqa: E402
+from waypoint.tracks import packages_for  # noqa: E402
+
+os.environ["PATH"] = "/usr/sbin:/usr/bin:/sbin:/bin"
+os.environ["DEBIAN_FRONTEND"] = "noninteractive"
+
+
+def run(*args):
+    print("$ " + " ".join(args), flush=True)
+    return subprocess.run(args, check=False).returncode
+
+
+def snapshot(reason):
+    """Taking a snapshot matters, but a failed one shouldn't block setup."""
+    code = run("timeshift", "--create", "--scripted", "--comments", reason)
+    if code != 0:
+        print("Couldn't take an undo snapshot. Continuing without one.", flush=True)
+
+
+def install_tracks(track_ids):
+    try:
+        packages = packages_for(track_ids)
+    except ValueError as error:
+        print(error, file=sys.stderr)
+        return 2
+    snapshot("Before installing developer tools")
+    if run("apt-get", "update") != 0:
+        print("Couldn't refresh the package list. Check your internet connection.", flush=True)
+        return 1
+    return run("apt-get", "install", "-y", *packages)
+
+
+def choose_nvidia_package(detect_output):
+    """Pick the package that nvidia-detect recommends. Only exact Debian driver names pass."""
+    for line in reversed(detect_output.splitlines()):
+        candidate = line.strip()
+        if re.fullmatch(r"nvidia(-[a-z0-9]+)*-driver", candidate):
+            return candidate
+    return None
+
+
+def gpu_driver():
+    if secure_boot_enabled():
+        print("Secure Boot is on, so the NVIDIA driver wouldn't load. Keeping the open-source driver.", flush=True)
+        return 1
+    snapshot("Before installing the NVIDIA driver")
+    if run("apt-get", "update") != 0 or run("apt-get", "install", "-y", "nvidia-detect") != 0:
+        return 1
+    output = subprocess.run(["nvidia-detect"], capture_output=True, text=True, check=False).stdout
+    package = choose_nvidia_package(output)
+    if not package:
+        print("This graphics card isn't supported by the available NVIDIA drivers. Keeping the open-source driver.", flush=True)
+        return 1
+    return run("apt-get", "install", "-y", package)
+
+
+def enable_docker():
+    uid = os.environ.get("PKEXEC_UID")
+    if not uid or int(uid) == 0:
+        print("Run this from your own account.", file=sys.stderr)
+        return 2
+    user = pwd.getpwuid(int(uid)).pw_name
+    code = run("usermod", "-aG", "docker", user)
+    if code == 0:
+        print("Done. Log out and back in to start using Docker.", flush=True)
+    return code
+
+
+def main(argv):
+    if os.geteuid() != 0:
+        print("This tool must run through pkexec.", file=sys.stderr)
+        return 2
+    if len(argv) >= 2 and argv[0] == "install-tracks":
+        return install_tracks(argv[1:])
+    if argv == ["snapshot"]:
+        snapshot("Manual snapshot")
+        return 0
+    if argv == ["gpu-driver"]:
+        return gpu_driver()
+    if argv == ["enable-docker"]:
+        return enable_docker()
+    print("Unknown action.", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

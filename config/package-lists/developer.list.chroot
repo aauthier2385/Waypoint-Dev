@@ -1,0 +1,16 @@
+# Tools every track shares. Track-specific tools install from the welcome app.
+git
+gh
+build-essential
+curl
+ca-certificates
+gnupg
+docker.io
+timeshift
+python3
+python3-gi
+gir1.2-gtk-3.0
+polkitd
+lxpolkit
+sudo
+pkexec

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Undo a System Change
+Comment=Restore a snapshot taken before a major change
+Exec=timeshift-launcher
+Icon=document-revert
+Terminal=false
+Categories=System;

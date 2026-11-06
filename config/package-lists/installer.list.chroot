@@ -1,0 +1,14 @@
+# Graphical installer and everything it needs without internet
+calamares
+calamares-settings-debian
+grub-common
+grub2-common
+grub-pc-bin
+grub-efi-amd64-bin
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
+os-prober
+cryptsetup
+cryptsetup-initramfs
+keyutils

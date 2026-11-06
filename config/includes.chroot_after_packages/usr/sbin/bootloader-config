@@ -1,0 +1,26 @@
+#!/bin/bash
+# Replaces Debian's version, which downloads GRUB during install. This one uses
+# copies stored in the image, so installing works without internet.
+set -u
+
+CHROOT=$(mount | grep proc | grep calamares | awk '{print $3}' | sed -e "s#/proc##g")
+[ -n "$CHROOT" ] || { echo "Could not find the install target" >&2; exit 1; }
+
+if [ "$(mount | grep "$CHROOT " | cut -c -16)" = "/dev/mapper/luks" ]; then
+    echo "UMASK=0077" > "$CHROOT/etc/initramfs-tools/conf.d/initramfs-permissions"
+fi
+
+if [ -d /sys/firmware/efi/efivars ]; then
+    kind=grub-efi-amd64
+else
+    kind=grub-pc
+fi
+
+echo " * Installing $kind from the image..."
+DEBIAN_FRONTEND=noninteractive chroot "$CHROOT" sh -c \
+  "dpkg -i /var/cache/waypoint/$kind/*.deb" || exit 1
+rm -rf "$CHROOT/var/cache/waypoint"
+
+# Let GRUB find other operating systems so dual-boot PCs keep Windows in the menu.
+sed -i "s/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/" "$CHROOT/etc/default/grub"
+chroot "$CHROOT" /usr/sbin/update-grub

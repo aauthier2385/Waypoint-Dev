@@ -1,0 +1,14 @@
+#!/bin/sh
+# Replaces Debian's version so installed systems keep contrib and non-free.
+# NVIDIA's driver lives in non-free, and the welcome app can install it.
+CHROOT=$(mount | grep proc | grep calamares | awk '{print $3}' | sed -e "s#/proc##g")
+RELEASE="trixie"
+AREAS="main contrib non-free non-free-firmware"
+
+cat << EOF > "$CHROOT/etc/apt/sources.list"
+deb http://deb.debian.org/debian $RELEASE $AREAS
+deb http://deb.debian.org/debian $RELEASE-updates $AREAS
+deb http://security.debian.org/debian-security/ $RELEASE-security $AREAS
+deb http://deb.debian.org/debian $RELEASE-backports $AREAS
+EOF
+exit 0

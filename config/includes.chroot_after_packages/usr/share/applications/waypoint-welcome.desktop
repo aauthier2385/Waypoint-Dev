@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Waypoint Welcome
+Comment=Choose what to build and set up your developer tools
+Exec=waypoint-welcome
+Icon=applications-development
+Terminal=false
+Categories=Development;

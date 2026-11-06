@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Password Prompt Service
+Comment=Lets apps ask for your password when they need to install something
+Exec=lxpolkit
+Icon=dialog-password
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

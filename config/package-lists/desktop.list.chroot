@@ -1,0 +1,12 @@
+# Lightweight desktop that stays usable on older PCs
+xfce4
+xfce4-goodies
+xfce4-terminal
+lightdm
+lightdm-gtk-greeter
+network-manager-gnome
+pipewire-audio
+firefox-esr
+mousepad
+fonts-noto-core
+fonts-jetbrains-mono

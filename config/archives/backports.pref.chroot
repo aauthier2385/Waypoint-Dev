@@ -1,0 +1,4 @@
+# Newer kernel and firmware for recent hardware. Everything else stays on Debian stable.
+Package: linux-image-* linux-headers-* linux-kbuild-* linux-compiler-* firmware-*
+Pin: release n=trixie-backports
+Pin-Priority: 990
