@@ -1,0 +1,11 @@
+[Unit]
+Description=Hide unused network disks from the Waypoint installer
+ConditionPathIsDirectory=/run/live/medium
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+ExecStart=-/usr/sbin/rmmod nbd
+
+[Install]
+WantedBy=multi-user.target

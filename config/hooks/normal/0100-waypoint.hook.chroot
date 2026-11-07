@@ -33,6 +33,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y code
 systemctl disable docker.service containerd.service || true
 systemctl enable docker.socket || true
 
+# Keep empty /dev/nbd devices out of the installer's boot loader menu.
+systemctl enable waypoint-live-disks.service
+
 # The installer picks a boot loader per PC, so keep both ready for offline use.
 for kind in grub-pc grub-efi-amd64; do
   dir="/var/cache/waypoint/$kind"
