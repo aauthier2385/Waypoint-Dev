@@ -1,0 +1,6 @@
+[package]
+name = "unsafe_and_c"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

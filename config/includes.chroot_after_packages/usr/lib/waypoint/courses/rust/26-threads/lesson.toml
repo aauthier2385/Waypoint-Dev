@@ -1,0 +1,4 @@
+title = "Doing things at the same time: threads"
+check = "tests"
+open = "src/main.rs"
+hint = "Add move before the closure in greet_from_thread. Spawn one thread per piece, keep the handles in a Vec, then add up handle.join().unwrap() for each. Share the count with Arc::new(Mutex::new(0)) and Arc::clone."

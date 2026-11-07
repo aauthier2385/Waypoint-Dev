@@ -1,0 +1,4 @@
+title = "Project: a to-do list app"
+check = "tests"
+open = "src/lib.rs"
+hint = "Task numbers start at 1, but Vec positions start at 0, so task 1 is self.tasks[0]. Check the number is in range first. Each line of the file is \"[x] Title\" or \"[ ] Title\"."

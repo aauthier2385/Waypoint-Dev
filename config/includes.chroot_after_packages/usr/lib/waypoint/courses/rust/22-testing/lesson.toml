@@ -1,0 +1,5 @@
+title = "Writing your own tests"
+check = "tests"
+open = "src/lib.rs"
+hint = "Write tests in tests/my_tests.rs, each marked #[test]. Test the tricky cases: 15 for fizzbuzz, 1900 and 2000 for leap years, exactly 90 for grades. Failing tests point you to the bugs."
+min_tests = 8

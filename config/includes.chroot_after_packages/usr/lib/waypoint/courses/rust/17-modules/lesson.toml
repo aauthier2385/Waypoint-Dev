@@ -1,0 +1,4 @@
+title = "Splitting code across files"
+check = "tests"
+open = "src/main.rs"
+hint = "main.rs needs mod lines for greetings and math. Mark the shapes functions pub. Create src/greetings.rs with pub fn hello. In src/math/mod.rs, write pub mod stats;"

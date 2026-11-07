@@ -1,0 +1,4 @@
+title = "Generics: code for any type"
+check = "tests"
+open = "src/main.rs"
+hint = "Comparing with > needs the PartialOrd ability, and copying a value out of a list needs Copy: fn largest<T: PartialOrd + Copy>(items: &[T]) -> T. The Stack's methods can mostly pass work to self.items."

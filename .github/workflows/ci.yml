@@ -13,3 +13,13 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y shellcheck desktop-file-utils nodejs apt-utils
       - run: pip install pytest pygame
       - run: pytest -q
+
+  course-on-debian:
+    # Learners run Debian 13's own Rust, so every lesson is checked with it too.
+    runs-on: ubuntu-24.04
+    container: debian:trixie
+    steps:
+      - uses: actions/checkout@v4
+      - run: apt-get update && apt-get install -y rustc cargo python3 python3-pytest
+      - run: rustc --version && cargo --version
+      - run: python3 -m pytest -q tests/test_course.py

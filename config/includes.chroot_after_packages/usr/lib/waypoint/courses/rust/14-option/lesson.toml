@@ -1,0 +1,4 @@
+title = "Option: when something might be missing"
+check = "tests"
+open = "src/main.rs"
+hint = "Give back Some(value) when you found something and None when you didn't. For describe_phone, match on phone_for(name): Some(number) => ..., None => ...."

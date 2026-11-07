@@ -1,0 +1,4 @@
+title = "Making programs fast"
+check = "tests"
+open = "src/main.rs"
+hint = "A HashSet remembers what it has seen, so checking for duplicates takes one pass. Build text with one String and push_str instead of format! in a loop. Work out fibonacci with a loop that keeps the last two numbers."

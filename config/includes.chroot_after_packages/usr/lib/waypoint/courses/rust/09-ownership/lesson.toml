@@ -1,0 +1,4 @@
+title = "Ownership"
+check = "tests"
+open = "src/main.rs"
+hint = "When the compiler says a value was moved, use .clone() to make a copy for the second use. For make_loud, you can write format!(\"{text}!!!\")."

@@ -1,0 +1,4 @@
+title = "Borrowing and references"
+check = "tests"
+open = "src/main.rs"
+hint = "Change count_words to take text: &str. Inside add_exclamation, use text.push_str(\"!\"). In double_all, write *number *= 2 inside a for loop over numbers.iter_mut()."

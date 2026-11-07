@@ -1,0 +1,4 @@
+title = "Iterators and closures"
+check = "tests"
+open = "src/main.rs"
+hint = "Chain steps: numbers.iter().filter(|n| *n % 2 == 0).map(|n| n * n).collect(). A closure that's given back needs move: move |x| x * factor."

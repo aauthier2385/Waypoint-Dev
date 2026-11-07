@@ -1,0 +1,6 @@
+title = "Documentation and publishing"
+check = "tests"
+open = "src/lib.rs"
+hint = "Put a /// comment above each function, with an example inside a ```rust code block. Each example should use thermo::... and check its answer with assert_eq! or assert!. Run cargo test to see the doc tests run."
+min_tests = 6
+doc_tests = true

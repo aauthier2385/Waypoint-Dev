@@ -1,0 +1,4 @@
+title = "Working with text"
+check = "tests"
+open = "src/main.rs"
+hint = "word[..1] is a word's first letter, and word[1..] is the rest. .to_uppercase() makes capitals. For censor, \"*\".repeat(word.len()) makes the right number of stars."

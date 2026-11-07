@@ -1,0 +1,4 @@
+title = "Structs: making your own types"
+check = "tests"
+open = "src/main.rs"
+hint = "Inside a method, self.width and self.height are the rectangle's own values. A method that changes the struct takes &mut self. withdraw should give back false, and change nothing, when there isn't enough money."

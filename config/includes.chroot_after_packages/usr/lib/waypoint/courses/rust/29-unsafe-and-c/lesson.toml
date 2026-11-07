@@ -1,0 +1,4 @@
+title = "Unsafe Rust and talking to C"
+check = "tests"
+open = "src/main.rs"
+hint = "Calls to C functions go inside unsafe { }. For strlen, make a CString first with CString::new(text) and pass .as_ptr(). In read_at, check the index is in range before using get_unchecked."

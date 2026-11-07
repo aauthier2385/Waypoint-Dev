@@ -47,15 +47,42 @@ If VS Code asks **"Do you trust the authors of the files in this folder?"**, cli
 | 07 Repeating things | Loops |
 | 08 Project: guessing game | Putting it all together in a game you can play |
 
-### Intermediate: thinking like a Rust programmer (coming in an update)
+### Intermediate: thinking like a Rust programmer
 
-Ownership, borrowing, text in depth, structs, enums and `match`, `Option`, error handling with `Result` and `?`, lists and lookup tables (`Vec` and `HashMap`), splitting code across files with modules, using other people's code (crates), traits, generics, iterators and closures, writing your own tests, and a to-do list app that saves to a file.
+| Lesson | What you'll learn |
+| --- | --- |
+| 09 Ownership | Who's responsible for data, and why Rust "moves" values |
+| 10 Borrowing and references | Lending values with `&` and `&mut` |
+| 11 Working with text | `String` and `&str`, slices, and text tools |
+| 12 Structs | Making your own types, with methods |
+| 13 Enums and match | Types with choices, and handling every case |
+| 14 Option | Handling "there might be nothing here" safely |
+| 15 Handling errors with Result | `Ok`, `Err`, and the `?` operator |
+| 16 Lists and lookup tables | `Vec` and `HashMap` |
+| 17 Splitting code across files | Modules, `mod`, `use`, and `pub` |
+| 18 Using other people's code | Crates, dependencies, and `Cargo.lock` |
+| 19 Traits | Abilities that many types can share |
+| 20 Generics | One piece of code for many types |
+| 21 Iterators and closures | Processing lists step by step |
+| 22 Writing your own tests | Finding and fixing bugs with tests |
+| 23 Project: a to-do list app | A real tool that saves to a file |
 
-### Advanced: building serious software (coming in an update)
+### Advanced: building serious software
 
-Lifetimes, smart pointers, running code at the same time with threads, async Rust, macros, unsafe Rust and talking to C, making programs faster, workspaces with many crates, documenting and publishing, and a small web server.
+| Lesson | What you'll learn |
+| --- | --- |
+| 24 Lifetimes | Making sure borrowed values never outlive what they borrow |
+| 25 Smart pointers | `Box`, `Rc`, `RefCell`, and recursion |
+| 26 Threads | Doing several things at once, safely |
+| 27 Async Rust | Waiting without wasting time |
+| 28 Macros | Code that writes code |
+| 29 Unsafe Rust and talking to C | Raw pointers, C functions, and safe wrappers |
+| 30 Making programs fast | Release builds, Big O, and measuring |
+| 31 Workspaces | Projects made of several crates |
+| 32 Documentation and publishing | Doc comments, doc tests, and crates.io |
+| 33 Project: a web server | How the web works, built from scratch |
 
-New lessons arrive through Waypoint's updates. Your finished lessons are never changed or replaced.
+Improvements arrive through Waypoint's updates. Lessons you've already started are never changed or replaced.
 
 ## Reference
 

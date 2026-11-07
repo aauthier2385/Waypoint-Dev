@@ -1,0 +1,4 @@
+title = "Project: a web server"
+check = "tests"
+open = "src/lib.rs"
+hint = "split_whitespace gives the method, then the path, then the HTTP version. split_once('?') separates the path from the query. Lines in a response end with \\r\\n, and a blank line separates the headers from the body."

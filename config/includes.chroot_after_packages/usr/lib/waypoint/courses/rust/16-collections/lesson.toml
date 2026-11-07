@@ -1,0 +1,4 @@
+title = "Lists and lookup tables"
+check = "tests"
+open = "src/main.rs"
+hint = "Make an empty Vec with Vec::new() and add with .push(). For word_counts, *counts.entry(word).or_insert(0) += 1 adds one to a word's count, starting at 0."

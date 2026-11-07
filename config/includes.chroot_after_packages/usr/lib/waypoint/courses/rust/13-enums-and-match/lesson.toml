@@ -1,0 +1,4 @@
+title = "Enums and match"
+check = "tests"
+open = "src/main.rs"
+hint = "Inside match, write one line per possibility: Direction::North => Direction::East, and so on. For Shape, pull out the values: Shape::Circle(radius) => 3.14159 * radius * radius."

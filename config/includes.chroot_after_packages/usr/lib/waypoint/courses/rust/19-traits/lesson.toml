@@ -1,0 +1,4 @@
+title = "Traits: shared abilities"
+check = "tests"
+open = "src/main.rs"
+hint = "Write impl Describe for Car { fn describe(&self) -> String { ... } }. introduce can call thing.describe(). For Display, use write!(f, \"{}°C\", self.degrees)."

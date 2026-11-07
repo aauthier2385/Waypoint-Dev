@@ -1,0 +1,4 @@
+title = "Smart pointers: Box, Rc, and RefCell"
+check = "tests"
+open = "src/main.rs"
+hint = "Change Item(i32, List) to Item(i32, Box<List>). Recursion works well for sum: match on the list, and for Item add the number to sum(rest). Rc::clone(value) makes a new owner, and counter.borrow_mut() lets you change what's inside a RefCell."

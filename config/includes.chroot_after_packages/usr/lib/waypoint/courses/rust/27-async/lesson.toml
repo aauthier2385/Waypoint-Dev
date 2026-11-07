@@ -1,0 +1,4 @@
+title = "Async Rust: waiting without wasting time"
+check = "tests"
+open = "src/main.rs"
+hint = "download logs \"start NAME\", then pause(steps).await, then logs \"finish NAME\" and gives back steps * 100. One after another means two .awaits in a row. At once means join(download(...), download(...)).await."

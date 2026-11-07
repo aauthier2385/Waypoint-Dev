@@ -1,0 +1,4 @@
+title = "Lifetimes"
+check = "tests"
+open = "src/main.rs"
+hint = "Write fn longest<'a>(a: &'a str, b: &'a str) -> &'a str. For the struct: struct Highlight<'a> { text: &'a str }, then impl<'a> Highlight<'a>. first_word doesn't need any lifetime written out."

@@ -1,0 +1,4 @@
+title = "Workspaces: projects with many crates"
+check = "tests"
+open = "Cargo.toml"
+hint = "In the top Cargo.toml, add \"scorekeeper\" to members. In app/Cargo.toml, add scorekeeper = { path = \"../scorekeeper\" } under [dependencies]. Then finish the Scoreboard methods."

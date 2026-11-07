@@ -25,7 +25,7 @@ def apply_solution(lesson, solution):
 
 
 def test_every_lesson_is_complete():
-    assert len(LESSONS) == 8
+    assert len(LESSONS) == 33
     for name in LESSONS:
         lesson = SOURCE / name
         meta = course.read_meta(lesson)

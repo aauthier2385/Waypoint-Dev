@@ -14,6 +14,14 @@ from .projects import load_state, save_state
 COURSES = Path(__file__).resolve().parent.parent / "courses"
 REFERENCE_DOCS = ("COURSE.md", "FILES.md")
 
+# Errors without a code number, matched by their wording.
+MESSAGE_HELP = {
+    "cannot find macro": "Rust can't find that macro. A macro written with macro_rules! has to come before the code that uses it in the file.",
+    "no rules expected": "The macro was used in a way none of its rules match. Compare what you typed with each rule's pattern.",
+    "expected `;`": "A semicolon is missing. Most lines that do something end with `;`.",
+    "unclosed delimiter": "A bracket was opened but never closed. Check that every ( [ { has a matching ) ] }.",
+}
+
 # What common Rust compiler errors mean, in everyday words.
 ERROR_HELP = {
     "E0384": "You changed a variable that isn't allowed to change. In Rust, variables are locked "
@@ -23,17 +31,29 @@ ERROR_HELP = {
              "the \"expected\" and \"found\" types.",
     "E0425": "Rust doesn't know that name. Check the spelling, and make sure the variable or "
              "function was created before you use it.",
-    "E0433": "Rust can't find that module or type. You may be missing a `use` line at the top of the file.",
+    "E0433": "Rust can't find that module, crate, or type. If it's one of your own files, check for a `mod` line. "
+             "If it's a crate, check Cargo.toml. Otherwise you may need a `use` line.",
     "E0382": "You used a value after giving it away. Once a value moves to a new owner, the old "
-             "name can't use it anymore. You'll learn about this in the Ownership lesson.",
+             "name can't use it anymore. Use `.clone()` for a copy, or lend it with `&`. Lessons 09 and 10 cover this.",
     "E0499": "Two parts of your code are trying to change the same thing at once. Rust only allows one at a time.",
     "E0502": "You're reading something while also changing it. Rust doesn't allow both at the same time.",
-    "E0106": "Rust needs to know how long a borrowed value lives. You'll learn about this in the Lifetimes lesson.",
+    "E0106": "Rust needs to know how long a borrowed value lives. Add a lifetime like `'a`. Lesson 24 covers this.",
     "E0061": "You called a function with the wrong number of inputs. Compare your call with the "
              "line that starts with `fn`.",
     "E0369": "You used an operator like + or == on values that don't support it.",
     "E0599": "That method doesn't exist for this type. Check the spelling, or the value may be a different type than you think.",
-    "E0277": "This type can't do what you asked. For example, you can't add a number to text.",
+    "E0277": "A type is missing an ability (a trait) that this code needs. The message names the type and the trait. "
+             "You may need to write `impl Trait for Type`, or the types may not be what you expect.",
+    "E0603": "That item is private. Things in another file can only be used if they're marked `pub`.",
+    "E0583": "You wrote `mod` for a module, but Rust can't find its file. Check the file's name and that it's in the src folder.",
+    "E0432": "Rust can't find what you're trying to `use`. Check the spelling and path. For your own files, check for "
+             "`mod` lines. For a crate, check that it's listed under [dependencies] in Cargo.toml.",
+    "E0412": "Rust doesn't know that type. Check the spelling, or bring it in with a `use` line.",
+    "E0046": "A trait's required method is missing. Every method the trait lists without a body has to be written in your `impl`.",
+    "E0373": "A new thread might outlive the values it uses. Put `move` before the closure so the thread takes ownership of them.",
+    "E0072": "This type contains itself, so Rust can't work out how big it is. Put the inner copy in a Box, like `Box<List>`.",
+    "E0726": "A type that borrows something needs its lifetime written out, like `Highlight<'a>`.",
+    "E0133": "This needs an `unsafe` block. Rust can't check it for you, so you have to mark it to show you've checked it yourself.",
     "E0423": "You used a name in the wrong way, like using a type as if it were a value.",
 }
 
@@ -143,8 +163,13 @@ def _compile_errors(stdout):
             code = (message.get("code") or {}).get("code")
             if message.get("message", "").startswith("aborting due to"):
                 continue
-            errors.append((code, message.get("rendered", "").strip()))
-    return errors
+            spans = [span for span in message.get("spans", []) if span.get("is_primary")] or [{}]
+            place = (spans[0].get("file_name", ""), spans[0].get("line_start", 0))
+            errors.append((place, code, message.get("rendered", "").strip()))
+    # Show problems in the order they appear in each file. The checker sits at the bottom,
+    # so the learner's own code comes first.
+    errors.sort(key=lambda error: error[0])
+    return [(code, rendered) for _, code, rendered in errors]
 
 
 def _explain_build_failure(errors, stderr, hint):
@@ -157,7 +182,8 @@ def _explain_build_failure(errors, stderr, hint):
         return CheckResult(False, "Your code didn't build.", stderr.strip())
     parts = []
     for code, rendered in errors[:3]:
-        explanation = ERROR_HELP.get(code)
+        explanation = ERROR_HELP.get(code) or next(
+            (text for words, text in MESSAGE_HELP.items() if words in rendered.splitlines()[0]), None)
         if explanation:
             parts.append(f"In plain English: {explanation}\n\nWhat Rust said:\n{rendered}")
         else:
@@ -206,6 +232,13 @@ def _check_tests(lesson, meta):
                            "One of your functions may have a loop that never ends. Look at any `while` or `loop` you wrote.")
     output = stdout + "\n" + stderr
     if code == 0:
+        wanted = meta.get("min_tests", 0)
+        ran = sum(int(n) for n in re.findall(r"test result: ok\. (\d+) passed", output))
+        if ran < wanted:
+            return CheckResult(False, f"Your code passes, but this lesson needs at least {wanted} tests and found {ran}.",
+                               "Write more tests of your own. Each one is a function marked #[test]"
+                               + (" or a code example in a /// comment." if meta.get("doc_tests") else ".")
+                               + (f"\n\nHint: {hint}" if hint else ""))
         return CheckResult(True, "Every check passed.")
     blocks = re.findall(r"---- (\S+) stdout ----\n(.*?)(?=\n---- |\nfailures:|\Z)", output, re.S)
     failed = [name.split("::")[-1] for name, _ in blocks]

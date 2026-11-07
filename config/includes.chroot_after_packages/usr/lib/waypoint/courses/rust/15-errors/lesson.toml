@@ -1,0 +1,4 @@
+title = "Handling errors with Result"
+check = "tests"
+open = "src/main.rs"
+hint = "Give back Ok(value) when it worked and Err(reason) when it didn't. Inside a function that gives back a Result, putting ? after another Result hands back its error automatically."

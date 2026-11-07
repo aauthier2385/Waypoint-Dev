@@ -1,0 +1,4 @@
+title = "Macros: code that writes code"
+check = "tests"
+open = "src/main.rs"
+hint = "Each macro is macro_rules! name { (pattern) => { code }; }. greet needs two rules: () and ($name:expr). For maximum, handle one item, then one item followed by $($rest:expr),+ and call maximum! again on the rest."

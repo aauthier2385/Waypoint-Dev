@@ -1,0 +1,4 @@
+title = "Using other people's code: crates"
+check = "tests"
+open = "Cargo.toml"
+hint = "In Cargo.toml, under [dependencies], add: helpers = { path = \"helpers\" }. Then in src/lib.rs, call helpers::celsius_to_fahrenheit and helpers::feels_like."
