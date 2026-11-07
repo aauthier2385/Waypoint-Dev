@@ -114,7 +114,8 @@ def check_tracks(track_ids=None):
 
 def check_docker(run=_run):
     if not shutil.which("docker"):
-        return Result(WARN, "Docker", "Not installed. You won't need it until a project asks for it.")
+        return Result(WARN, "Docker", "Not installed. You won't need it until a project asks for it.",
+                      "Run: dev docker-setup")
     code, _ = run(["docker", "version", "--format", "{{.Server.Version}}"])
     if code != 0:
         return Result(WARN, "Docker", "Not set up for your account. You won't need it until a project asks for it.",

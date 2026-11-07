@@ -29,9 +29,10 @@ echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y code
 
-# Keep Docker out of the way until something actually uses it.
-systemctl disable docker.service containerd.service || true
-systemctl enable docker.socket || true
+# Keep the download under GitHub's 2 GiB file limit. License files stay, as their licenses require.
+find /usr/share/doc -type f ! -name copyright ! -name 'copyright.*' -delete
+find /usr/share/doc -depth -type d -empty -delete
+find /usr/share/man -mindepth 1 -maxdepth 1 -type d ! -name 'man*' -exec rm -rf {} +
 
 # Keep empty /dev/nbd devices out of the installer's boot loader menu.
 systemctl enable waypoint-live-disks.service

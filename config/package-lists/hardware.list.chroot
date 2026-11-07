@@ -1,5 +1,4 @@
 # Kernel headers and firmware for newer and older hardware
-linux-headers-amd64
 firmware-linux
 firmware-linux-nonfree
 firmware-misc-nonfree

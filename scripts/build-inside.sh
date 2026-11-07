@@ -17,6 +17,10 @@ gpg --show-keys /tmp/waypoint.asc
 mkdir -p config/packages.chroot
 sh /src/scripts/build-deb.sh 1.0.0 /tmp/waypoint.asc config/packages.chroot
 lb config
+# Bigger blocks and an x86-aware filter make the system image noticeably smaller.
+export MKSQUASHFS_OPTIONS="-b 1M -Xbcj x86"
 lb build
 cp ./*.iso /dist/waypoint-1-amd64.iso
+unsquashfs -s binary/live/filesystem.squashfs | grep -iE 'block size|filesystem size' || true
+ls -l --block-size=M /dist/waypoint-1-amd64.iso
 sha256sum /dist/waypoint-1-amd64.iso

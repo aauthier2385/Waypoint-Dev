@@ -72,7 +72,9 @@ def gpu_driver():
     if not package:
         print("This graphics card isn't supported by the available NVIDIA drivers. Keeping the open-source driver.", flush=True)
         return 1
-    return run("apt-get", "install", "-y", package)
+    # The driver is built for the running kernel, so it needs that kernel's headers.
+    headers = f"linux-headers-{os.uname().release}"
+    return run("apt-get", "install", "-y", headers, package)
 
 
 def key_fingerprints(key_file):
@@ -107,6 +109,10 @@ def enable_docker():
         print("Run this from your own account.", file=sys.stderr)
         return 2
     user = pwd.getpwuid(int(uid)).pw_name
+    if not shutil.which("docker"):
+        if run("apt-get", "update") != 0 or run("apt-get", "install", "-y", "docker.io") != 0:
+            print("Couldn't install Docker. Check your internet connection.", flush=True)
+            return 1
     code = run("usermod", "-aG", "docker", user)
     if code == 0:
         print("Done. Log out and back in to start using Docker.", flush=True)

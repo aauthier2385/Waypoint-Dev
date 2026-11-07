@@ -31,7 +31,7 @@ def main(argv=None):
     check.add_argument("path", nargs="?", default=".")
     learn_commands.add_parser("status", help="show which lessons you've finished")
     commands.add_parser("claude", help="install the Claude desktop app")
-    commands.add_parser("docker-setup", help="let your account use Docker")
+    commands.add_parser("docker-setup", help="install Docker and let your account use it")
     args = parser.parse_args(argv)
 
     if args.command == "doctor":
