@@ -1,0 +1,8 @@
+{
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor"
+  },
+  "editor.fontSize": 15,
+  "editor.minimap.enabled": false,
+  "files.autoSave": "afterDelay"
+}

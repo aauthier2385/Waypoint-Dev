@@ -1,0 +1,8 @@
+title = "Your first program"
+check = "output"
+open = "src/main.rs"
+expected_output = """
+Hello, world!
+I am learning Rust!
+"""
+hint = "Copy the whole println! line, paste it on the next line, and change only the words inside the quotes. Keep the semicolon at the end."

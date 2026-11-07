@@ -1,0 +1,4 @@
+title = "Functions"
+check = "tests"
+open = "src/main.rs"
+hint = "The last line of a function, without a semicolon, is the answer it gives back. For the greeting, format!(\"Hello, {name}!\") builds the text."

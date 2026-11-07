@@ -11,6 +11,8 @@ A beginner-friendly Linux developer workstation based on Debian 13. "Waypoint" i
 - Git and GitHub setup, plus a starter project and lesson for each choice
 - `dev doctor`, which explains common problems and their fixes
 - Undo snapshots, compressed memory, VS Code, and Docker that starts only when needed
+- Optional Claude setup and updates through `apt`
+- A built-in Rust course: open **Rust Course** or run `dev learn`
 
 ## Build the ISO
 
@@ -39,9 +41,37 @@ Try the ISO in a VM first, then on real hardware:
 | Preinstalled apps | `config/package-lists/` |
 | Tracks | `.../usr/lib/waypoint/waypoint/tracks.py` |
 | Starter projects | `.../usr/lib/waypoint/starters/` |
+| Rust course lessons | `.../usr/lib/waypoint/courses/rust/` (each lesson needs a solution in `tests/course_solutions/rust/`) |
 | Welcome app | `.../usr/lib/waypoint/waypoint/welcome.py` |
 
 `...` is `config/includes.chroot_after_packages`.
+
+## Updates
+
+Every push to `main` that passes CI publishes a signed `waypoint-tools` package to GitHub Pages. Installed PCs get it with:
+
+`sudo apt update && sudo apt upgrade`
+
+Before the first publish:
+
+1. In the repo, open **Settings > Pages** and set **Source** to **GitHub Actions**.
+2. Create a signing key with no passphrase on your own PC:
+   `gpg --batch --passphrase '' --quick-generate-key "Waypoint Updates" ed25519 sign never`
+3. Print the private key with `gpg --armor --export-secret-keys "Waypoint Updates"`.
+4. Save the whole output as a repository secret named `WAYPOINT_APT_KEY`.
+
+Keep that key private. Anyone holding it, or able to push to `main`, can send root-level updates to every Waypoint PC.
+
+To add updates to a PC installed from an older ISO:
+
+```sh
+sudo curl -fsSL https://aauthier2385.github.io/Waypoint-Dev/waypoint.asc -o /usr/share/keyrings/waypoint-archive-keyring.asc
+gpg --show-keys /usr/share/keyrings/waypoint-archive-keyring.asc
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/waypoint-archive-keyring.asc] https://aauthier2385.github.io/Waypoint-Dev stable main" | sudo tee /etc/apt/sources.list.d/waypoint.list
+sudo apt update && sudo apt install waypoint-tools
+```
+
+Check that the fingerprint matches your key before running the last line. These updates cover Waypoint's own tools. Debian handles the rest of the system.
 
 ## Run the checks
 

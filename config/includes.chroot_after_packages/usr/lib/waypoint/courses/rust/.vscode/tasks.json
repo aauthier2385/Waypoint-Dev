@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Check my work",
+      "type": "shell",
+      "command": "dev learn check \"${fileDirname}\"",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "clear": true, "focus": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run my program",
+      "type": "shell",
+      "command": "cargo run",
+      "options": { "cwd": "${fileDirname}" },
+      "presentation": { "clear": true, "focus": true },
+      "problemMatcher": []
+    }
+  ]
+}

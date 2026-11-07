@@ -3,7 +3,7 @@ import argparse
 import os
 import sys
 
-from . import doctor
+from . import course, doctor
 from .projects import create_project, load_state, save_state
 from .tracks import TRACKS
 
@@ -25,6 +25,11 @@ def main(argv=None):
     install = commands.add_parser("install", help="install the tools for a track")
     install.add_argument("tracks", nargs="+", choices=sorted(TRACKS))
     commands.add_parser("snapshot", help="take an undo snapshot now")
+    learn = commands.add_parser("learn", help="open the built-in Rust course")
+    learn_commands = learn.add_subparsers(dest="learn_command")
+    check = learn_commands.add_parser("check", help="check the lesson you're working on")
+    check.add_argument("path", nargs="?", default=".")
+    learn_commands.add_parser("status", help="show which lessons you've finished")
     commands.add_parser("claude", help="install the Claude desktop app")
     commands.add_parser("docker-setup", help="let your account use Docker")
     args = parser.parse_args(argv)
@@ -33,6 +38,12 @@ def main(argv=None):
         results = doctor.run_all()
         print(doctor.render(results))
         return 1 if any(result.status == doctor.FAIL for result in results) else 0
+    if args.command == "learn":
+        if args.learn_command == "check":
+            return course.check_command(args.path)
+        if args.learn_command == "status":
+            return course.status_command()
+        return course.open_course()
     if args.command == "tracks":
         for track in TRACKS.values():
             print(f"{track.id:8} {track.title}: {track.blurb}")

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Rust Course
+Comment=Learn Rust step by step, from your first program to advanced topics
+Exec=xfce4-terminal --hold -x dev learn
+Icon=accessories-dictionary
+Terminal=false
+Categories=Development;

@@ -1,0 +1,4 @@
+title = "Repeating things"
+check = "tests"
+open = "src/main.rs"
+hint = "Start a mutable total at 0, then add to it inside the loop. For doublings, keep a mutable count and double the amount until it reaches the goal."

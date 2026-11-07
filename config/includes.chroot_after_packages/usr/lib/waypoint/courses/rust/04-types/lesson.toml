@@ -1,0 +1,9 @@
+title = "Types of data"
+check = "output"
+open = "src/main.rs"
+expected_output = """
+12 apples at $0.75 each costs $9.00.
+On sale: true
+Rating: ★
+"""
+hint = "A price with a decimal point needs f64, not u32. true and false are written without quotes. A single character uses single quotes, like '★'."

@@ -245,6 +245,20 @@ class Welcome(Gtk.Window):
         self.project_list.pack_start(row, False, False, 0)
         row.show_all()
 
+    def add_course_row(self):
+        row = Gtk.Box(spacing=8)
+        row.get_style_context().add_class("wp-card")
+        text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        text.pack_start(label("Rust Course"), False, False, 0)
+        text.pack_start(label("Step-by-step lessons from your first program to advanced Rust.", "wp-muted"), False, False, 0)
+        row.pack_start(text, True, True, 0)
+        start = Gtk.Button(label="Start the course")
+        start.get_style_context().add_class("wp-primary")
+        start.connect("clicked", lambda _: subprocess.Popen(["dev", "learn"]))
+        row.pack_end(start, False, False, 0)
+        self.project_list.pack_start(row, False, False, 0)
+        row.show_all()
+
     # Actions ---------------------------------------------------------------
     @staticmethod
     def git_config(key):
@@ -328,6 +342,8 @@ class Welcome(Gtk.Window):
             self.project_list.remove(child)
         for track_id in tracks:
             self.add_project_row(track_id, Path(known[track_id]))
+        if "rust" in tracks:
+            self.add_course_row()
         save_state(tracks=sorted(set(previous.get("tracks", [])) | set(tracks)), projects=known, finished=True)
         self.stack.set_visible_child_name("done")
         return False

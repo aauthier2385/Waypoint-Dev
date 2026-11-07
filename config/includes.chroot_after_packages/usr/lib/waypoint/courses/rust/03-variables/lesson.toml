@@ -1,0 +1,10 @@
+title = "Variables"
+check = "output"
+open = "src/main.rs"
+expected_output = """
+Sam starts with 0 points.
+Sam now has 10 points.
+Sam finds another coin!
+Sam now has 25 points.
+"""
+hint = "Add mut after let on the score line. Then add 15 to score and print the last two lines, the same way the first coin works."

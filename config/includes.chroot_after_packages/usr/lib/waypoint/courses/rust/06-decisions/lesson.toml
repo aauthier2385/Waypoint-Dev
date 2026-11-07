@@ -1,0 +1,4 @@
+title = "Making decisions"
+check = "tests"
+open = "src/main.rs"
+hint = "Check the smallest range first with if, then the next with else if, and handle everything else with else. A number is even when number % 2 == 0."

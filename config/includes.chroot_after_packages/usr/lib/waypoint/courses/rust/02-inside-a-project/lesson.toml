@@ -1,0 +1,7 @@
+title = "Inside a Rust project"
+check = "output"
+open = "main.rs"
+expected_output = """
+Cargo found my code!
+"""
+hint = "Make a new folder called src inside this lesson's folder, then move main.rs into it. In the terminal: mkdir src && mv main.rs src/"

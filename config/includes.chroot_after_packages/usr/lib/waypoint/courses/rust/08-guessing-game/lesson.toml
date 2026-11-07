@@ -1,0 +1,4 @@
+title = "Project: guessing game"
+check = "tests"
+open = "src/main.rs"
+hint = "Use if, else if, and else to compare the guess with the secret. A guess is valid when it's at least 1 and at most 100."
