@@ -14,6 +14,7 @@ STARTERS = INCLUDES / "usr/lib/waypoint/starters"
 SHELL_SCRIPTS = [
     ROOT / "build.sh", ROOT / "auto/config", ROOT / "auto/clean",
     ROOT / "scripts/build-inside.sh", ROOT / "scripts/check-packages.sh",
+    ROOT / "scripts/build-deb.sh", ROOT / "scripts/build-apt-repo.sh",
     ROOT / "config/hooks/normal/0100-waypoint.hook.chroot",
     INCLUDES / "usr/lib/waypoint/installer/bootloader-config", INCLUDES / "usr/lib/waypoint/installer/sources-final",
 ]

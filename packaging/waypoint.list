@@ -1,0 +1,1 @@
+deb [arch=amd64 signed-by=/usr/share/keyrings/waypoint-archive-keyring.asc] https://aauthier2385.github.io/Waypoint-Dev stable main

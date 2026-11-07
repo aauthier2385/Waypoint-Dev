@@ -1,0 +1,10 @@
+Package: waypoint-tools
+Version: @VERSION@
+Architecture: all
+Maintainer: Andrew Authier <aauthier2385@users.noreply.github.com>
+Section: devel
+Priority: optional
+Depends: python3, python3-gi, gir1.2-gtk-3.0, pkexec, polkitd, lxpolkit, git, gh, curl, gnupg, timeshift, pciutils, mokutil, xfce4-terminal
+Homepage: https://github.com/aauthier2385/Waypoint-Dev
+Description: Beginner-friendly developer tools for Waypoint
+ The Waypoint welcome app, the dev command, starter projects, and lessons.
